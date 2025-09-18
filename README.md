@@ -1,3 +1,64 @@
+## Tài liệu kiến trúc và thành phần
+
+### Tổng quan hệ thống
+- **Nguồn dữ liệu**: `main.stockprediction.data.StockDataGenerator` tạo dữ liệu OHLCV giả lập theo nhiều kịch bản (daily, intraday, trending, sideways, volatile, gap, hỗ trợ/kháng cự, điều kiện cực đoan).
+- **Chỉ báo kỹ thuật**: `main.stockprediction.indicators.TechnicalIndicators` tính `SMA`, `EMA`, `RSI`, `MACD` và histogram.
+- **Máy dự đoán**: `main.stockprediction.engine.PredictionEngine` sinh `PredictionSignal` (LONG/SHORT/REVERSAL) từ các chỉ báo và mô tả tâm lý thị trường.
+
+### Chi tiết từng class và method chính
+
+#### main.stockprediction.data.StockDataGenerator
+- **Vai trò**: Sinh dữ liệu chứng khoán giả lập phục vụ thử nghiệm.
+- **Method công khai**:
+  - `generateSampleData(int days, double startPrice) -> List<StockData>`: dữ liệu daily biến động ~2%/ngày.
+  - `generateTrendingData(int days, double startPrice, double trendStrength) -> List<StockData>`: thêm xu hướng tăng/giảm + nhiễu.
+  - `generatePatternData(int days, double startPrice, String pattern) -> List<StockData>`: chọn `bullish|bearish|sideways|volatile`.
+  - `generateMultipleStocksData(int numberOfStocks, int days) -> List<List<StockData>>`: tạo nhiều mã với pattern ngẫu nhiên.
+  - `generateIntradayData(int hours, double startPrice) -> List<StockData>`: dữ liệu theo giờ, biến động/khối lượng thấp hơn.
+  - `generateDataWithGaps(int days, double startPrice) -> List<StockData>`: thêm gap up/down (xác suất ~10%).
+  - `generateDataWithSupportResistance(int days, double startPrice) -> List<StockData>`: bật/tụt quanh hỗ trợ 0.9x và kháng cự 1.1x.
+  - `generateExtremeMarketData(int days, double startPrice, String condition) -> List<StockData>`: `crash|bubble|flash_crash`.
+  - `getStockSymbol(int index)`, `getCompanyName(int index)`.
+- **Lưu ý**: Danh sách chỉ số trả về theo `LocalDateTime` tăng dần; mỗi phần tử có đủ `open/high/low/close/volume`.
+
+#### main.stockprediction.indicators.TechnicalIndicators
+- **Vai trò**: Tính toán chỉ báo kỹ thuật chuẩn.
+- **Method công khai**:
+  - `calculateSMA(List<StockData> data, int period) -> List<Double>`: trả `null` ở vị trí chưa đủ dữ liệu.
+  - `calculateEMA(List<StockData> data, int period) -> List<Double>`: seed bằng SMA tại chỉ số `period-1`, trước đó là `null`.
+  - `calculateRSI(List<StockData> data, int period) -> List<Double>`: Wilder’s smoothing; giai đoạn khởi tạo trả `null`, giá trị đầu tại `i==period-1`.
+  - `calculateMACD(List<StockData> data, int fast, int slow, int signal) -> MACDResult` với `getMacdLine()`, `getSignalLine()`, `getHistogram()`.
+- **Lưu ý**: Kết quả thẳng hàng với dữ liệu đầu vào; luôn kiểm tra `null` trước khi dùng.
+
+#### main.stockprediction.engine.PredictionEngine
+- **Vai trò**: Phân tích xu hướng và sinh tín hiệu.
+- **Hằng số**: `EMA_20_PERIOD=20`, `EMA_50_PERIOD=50`, `RSI_PERIOD=14`, `MACD_FAST=12`, `MACD_SLOW=26`, `MACD_SIGNAL=9`.
+- **Method công khai**:
+  - `analyzeTrend(List<StockData> data) -> List<PredictionSignal>`: tính EMA/RSI/MACD, duyệt từ chỉ số 50, ưu tiên giao cắt EMA có xác nhận MACD và ngưỡng RSI; nếu không có thì kiểm tra quá mua/quá bán để sinh REVERSAL.
+  - `getMarketSentiment(List<StockData> data) -> String`: mô tả xu hướng (EMA20/EMA50) + trạng thái RSI (quá mua/bán/tích cực/trung tính).
+- **Method nội bộ**:
+  - `checkEMACrossover(...)`: LONG khi `EMA20` cắt lên `EMA50` và `RSI>55`; SHORT khi cắt xuống và `RSI<45`. Độ tin cậy là tổng hợp có trọng số: RSI (55%), EMA spread (25%), xác nhận MACD (15%), độ dốc histogram (5%).
+  - `checkOverboughtOversold(...)`: RSI>70 hoặc <30 sinh cảnh báo đảo chiều.
+
+### Luồng hoạt động
+1. Tạo dữ liệu: dùng `StockDataGenerator.*` để lấy `List<StockData>` theo kịch bản mong muốn.
+2. Phân tích: gọi `PredictionEngine.analyzeTrend(data)` để lấy danh sách `PredictionSignal`.
+3. Tóm tắt: dùng `PredictionEngine.getMarketSentiment(data)` để mô tả bối cảnh thị trường.
+
+### Ví dụ sử dụng nhanh
+```java
+import java.util.List;
+import main.stockprediction.data.StockDataGenerator;
+import main.stockprediction.engine.PredictionEngine;
+import main.stockprediction.model.StockData;
+import main.stockprediction.model.PredictionSignal;
+
+List<StockData> data = StockDataGenerator.generatePatternData(200, 50.0, "bullish");
+PredictionEngine engine = new PredictionEngine();
+List<PredictionSignal> signals = engine.analyzeTrend(data);
+String sentiment = engine.getMarketSentiment(data);
+```
+
 
 ## 📊 Output mẫu
 
@@ -193,7 +254,7 @@ KHUYẾN NGHỊ: Tiếp tục theo dõi và chờ tín hiệu rõ ràng hơn
 | **REVERSAL** | RSI > 70 (quá mua) hoặc RSI < 30 (quá bán) | Đảo chiều |
 | **HOLD** | Không đủ điều kiện | Chờ tín hiệu |
 
-## 🔧 Chỉ báo kỹ thuật
+##  Chỉ báo kỹ thuật
 - **EMA 20/50**: Đường trung bình động
 - **RSI 14**: Chỉ số sức mạnh tương đối  
 - **MACD 12,26,9**: Hội tụ phân kỳ
