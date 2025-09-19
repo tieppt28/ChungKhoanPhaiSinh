@@ -1,4 +1,4 @@
-package main.stockprediction.engine;
+package src.main.stockprediction.engine;
 
 import main.stockprediction.model.StockData;
 import main.stockprediction.model.PredictionSignal;

@@ -1,11 +1,15 @@
-package main;
+package src.main;
 
 
 import main.stockprediction.model.StockData;
 import main.stockprediction.model.PredictionSignal;
-import main.stockprediction.engine.PredictionEngine;
+import src.main.stockprediction.engine.PredictionEngine;
 import main.stockprediction.data.StockDataGenerator;
 import main.stockprediction.indicators.TechnicalIndicators;
+import main.stockprediction.ui.CandlestickChart;
+import main.stockprediction.data.RealDataLoader;
+import java.nio.file.Paths;
+import java.time.ZoneId;
 
 import java.util.List;
 import java.util.Scanner;
@@ -41,6 +45,9 @@ public class StockPredictionApp {
                 case 4:
                     showPredictionRules();
                     break;
+                case 5:
+                    analyzeCsvData();
+                    break;
                 case 0:
                     System.out.println("Cảm ơn bạn đã sử dụng hệ thống!");
                     System.exit(0);
@@ -60,6 +67,7 @@ public class StockPredictionApp {
         System.out.println("2. Phân tích dữ liệu theo mẫu");
         System.out.println("3. Hiển thị chỉ báo kỹ thuật");
         System.out.println("4. Hiển thị quy tắc dự đoán");
+        System.out.println("5. Phân tích dữ liệu thực từ CSV");
         System.out.println("0. Thoát");
         System.out.print("Chọn: ");
     }
@@ -81,6 +89,9 @@ public class StockPredictionApp {
         System.out.println("Đã tạo " + stockData.size() + " điểm dữ liệu");
         System.out.println("Giá bắt đầu: " + String.format("%.2f VND", stockData.get(0).getClose()));
         System.out.println("Giá hiện tại: " + String.format("%.2f VND", stockData.get(stockData.size() - 1).getClose()));
+
+        // Hiển thị chart nến
+        CandlestickChart.showCandles("Candles - Random Data", stockData);
 
         // Analyze trend
         List<PredictionSignal> signals = predictionEngine.analyzeTrend(stockData);
@@ -127,6 +138,9 @@ public class StockPredictionApp {
         System.out.println("Số điểm dữ liệu: " + stockData.size());
         System.out.println("Giá bắt đầu: " + String.format("%.2f VND", stockData.get(0).getClose()));
         System.out.println("Giá kết thúc: " + String.format("%.2f VND", stockData.get(stockData.size() - 1).getClose()));
+
+        // Hiển thị chart nến
+        CandlestickChart.showCandles("Candles - Pattern: " + pattern.toUpperCase(), stockData);
 
         // Analyze trend
         List<PredictionSignal> signals = predictionEngine.analyzeTrend(stockData);
@@ -201,5 +215,43 @@ public class StockPredictionApp {
         System.out.println("   • EMA 50: Đường trung bình động 50 ngày");
         System.out.println("   • RSI: Chỉ số sức mạnh tương đối (14 ngày)");
         System.out.println("   • MACD: Hội tụ phân kỳ đường trung bình");
+    }
+
+    private static void analyzeCsvData() {
+        System.out.println("\n=== PHÂN TÍCH DỮ LIỆU THỰC TỪ CSV ===");
+        System.out.print("Nhập đường dẫn CSV (vd: data/VNM.csv): ");
+        String path = scanner.nextLine().trim();
+        if (path.isEmpty()) {
+            System.out.println("Đường dẫn rỗng.");
+            return;
+        }
+        try {
+            List<StockData> stockData = RealDataLoader.loadFromCsv(Paths.get(path), ZoneId.of("Asia/Ho_Chi_Minh"));
+            if (stockData.isEmpty()) {
+                System.out.println("Không đọc được dữ liệu từ CSV.");
+                return;
+            }
+            System.out.println("Đã nạp " + stockData.size() + " điểm dữ liệu.");
+
+            // Hiển thị chart nến
+            CandlestickChart.showCandles("Candles - CSV: " + path, stockData);
+
+            // Phân tích
+            List<PredictionSignal> signals = predictionEngine.analyzeTrend(stockData);
+            System.out.println("\n--- TÌNH HÌNH THỊ TRƯỜNG ---");
+            System.out.println(predictionEngine.getMarketSentiment(stockData));
+
+            System.out.println("\n--- TÍN HIỆU GIAO DỊCH ---");
+            if (signals.isEmpty()) {
+                System.out.println("Không có tín hiệu giao dịch nào được tạo ra.");
+            } else {
+                System.out.println("Tìm thấy " + signals.size() + " tín hiệu:");
+                for (PredictionSignal signal : signals) {
+                    System.out.println("• " + signal);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Lỗi khi đọc CSV: " + e.getMessage());
+        }
     }
 }

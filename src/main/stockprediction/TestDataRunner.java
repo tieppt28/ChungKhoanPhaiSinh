@@ -1,8 +1,9 @@
-package main.stockprediction;
+package src.main.stockprediction;
 
 import main.stockprediction.data.StockDataGenerator;
-import main.stockprediction.engine.PredictionEngine;
+import src.main.stockprediction.engine.PredictionEngine;
 import main.stockprediction.indicators.TechnicalIndicators;
+import main.stockprediction.ui.CandlestickChart;
 import main.stockprediction.model.PredictionSignal;
 import main.stockprediction.model.StockData;
 
@@ -53,6 +54,8 @@ public class TestDataRunner {
         System.out.println("1. TEST XU HƯỚNG TĂNG MẠNH:");
         List<StockData> data = StockDataGenerator.generatePatternData(80, 100.0, "bullish");
         analyzeAndPredict(data, "BULL");
+        // Hiển thị chart nến cho bộ dữ liệu đầu tiên
+        CandlestickChart.showCandles("Candles - BULL", data);
         System.out.println();
     }
 
