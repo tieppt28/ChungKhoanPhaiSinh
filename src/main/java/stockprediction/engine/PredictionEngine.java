@@ -1,8 +1,8 @@
-package src.main.stockprediction.engine;
+package stockprediction.engine;
 
-import main.stockprediction.model.StockData;
-import main.stockprediction.model.PredictionSignal;
-import main.stockprediction.indicators.TechnicalIndicators;
+import stockprediction.model.StockData;
+import stockprediction.model.PredictionSignal;
+import stockprediction.indicators.TechnicalIndicators;
 import java.util.List;
 import java.util.ArrayList;
 

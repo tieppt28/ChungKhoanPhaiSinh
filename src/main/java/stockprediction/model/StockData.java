@@ -1,4 +1,4 @@
-package main.stockprediction.model;
+package stockprediction.model;
 
 
 import java.time.LocalDateTime;

@@ -1,4 +1,235 @@
-## Tài liệu kiến trúc và thành phần
+# Hệ thống Dự đoán Xu hướng Chứng khoán
+
+Hệ thống dự đoán xu hướng chứng khoán sử dụng các chỉ báo kỹ thuật (EMA, RSI, MACD) với giao diện web React và biểu đồ TradingView.
+
+## 🚀 Tính năng
+
+### Backend (Java Spring Boot)
+- **Database**: H2 Database với JPA/Hibernate
+- **API**: RESTful API với CORS support
+- **Chỉ báo kỹ thuật**: EMA, RSI, MACD
+- **Dự đoán**: Tín hiệu LONG/SHORT/REVERSAL với độ tin cậy
+- **Dữ liệu mẫu**: Tự động tạo dữ liệu cho 10 mã cổ phiếu
+
+### Frontend (React)
+- **Dashboard**: Tổng quan thị trường và thống kê
+- **Biểu đồ**: TradingView Lightweight Charts
+- **Chi tiết cổ phiếu**: Thông tin và tín hiệu cho từng mã
+- **Quản lý tín hiệu**: Lọc và xem tín hiệu dự đoán
+- **Responsive**: Giao diện thích ứng mobile
+
+## 📋 Yêu cầu hệ thống
+
+- Java 11+
+- Node.js 16+
+- Maven 3.6+
+
+## 🛠️ Cài đặt và Chạy
+
+### Cách 1: Chạy tự động (Khuyến nghị)
+
+```bash
+# Double-click file run.bat
+# Hoặc chạy trong terminal:
+run.bat
+```
+
+### Cách 2: Chạy thủ công
+
+**Backend:**
+```bash
+mvn spring-boot:run
+```
+
+**Frontend (terminal mới):**
+```bash
+cd frontend
+npm install
+npm start
+```
+
+### Truy cập ứng dụng:
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8080/api
+- **H2 Console**: http://localhost:8080/api/h2-console
+  - JDBC URL: `jdbc:h2:mem:stockdb`
+  - Username: `sa`
+  - Password: (để trống)
+
+## 📊 Cấu trúc Dự án
+
+```
+ChungKhoanPhaiSinh/
+├── src/main/java/stockprediction/
+│   ├── entity/                 # JPA Entities
+│   │   ├── StockDataEntity.java
+│   │   └── PredictionSignalEntity.java
+│   ├── repository/             # JPA Repositories
+│   │   ├── StockDataRepository.java
+│   │   └── PredictionSignalRepository.java
+│   ├── service/                # Business Logic
+│   │   ├── StockDataService.java
+│   │   ├── PredictionSignalService.java
+│   │   └── DataInitializationService.java
+│   ├── controller/             # REST Controllers
+│   │   ├── StockDataController.java
+│   │   └── PredictionSignalController.java
+│   ├── model/                  # Domain Models
+│   │   ├── StockData.java
+│   │   └── PredictionSignal.java
+│   ├── data/                   # Data Generation
+│   │   ├── StockDataGenerator.java
+│   │   └── RealDataLoader.java
+│   ├── engine/                 # Prediction Engine
+│   │   └── PredictionEngine.java
+│   ├── indicators/             # Technical Indicators
+│   │   └── TechnicalIndicators.java
+│   └── StockPredictionApplication.java
+├── src/main/resources/
+│   └── application.yml         # Spring Boot Configuration
+├── frontend/
+│   ├── src/
+│   │   ├── components/         # React Components
+│   │   │   ├── Header.js
+│   │   │   └── TradingViewChart.js
+│   │   ├── pages/              # React Pages
+│   │   │   ├── Dashboard.js
+│   │   │   ├── StockDetail.js
+│   │   │   └── Signals.js
+│   │   ├── services/           # API Services
+│   │   │   └── api.js
+│   │   ├── App.js
+│   │   └── index.js
+│   ├── public/
+│   │   └── index.html
+│   └── package.json
+├── pom.xml                     # Maven Dependencies
+├── run.bat                     # Windows startup script
+└── README.md
+```
+
+## 🎯 Sử dụng
+
+### Dashboard
+- Xem tổng quan thị trường
+- Thống kê tín hiệu dự đoán
+- Danh sách mã cổ phiếu
+- Biểu đồ giá real-time
+
+### Chi tiết Cổ phiếu
+- Biểu đồ TradingView với dữ liệu OHLCV
+- Thông tin giá mở/đóng/cao/thấp
+- Tín hiệu dự đoán với độ tin cậy
+- Lý do phân tích
+
+### Quản lý Tín hiệu
+- Lọc theo loại tín hiệu (LONG/SHORT/REVERSAL)
+- Lọc theo độ tin cậy
+- Lọc theo mã cổ phiếu
+- Xem chi tiết từng tín hiệu
+
+## 🔧 Cấu hình
+
+### Database (application.yml)
+```yaml
+spring:
+  datasource:
+    url: jdbc:h2:mem:stockdb
+    username: sa
+    password: 
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+```
+
+### CORS (cho React)
+```yaml
+cors:
+  allowed-origins: "http://localhost:3000,http://localhost:3001"
+```
+
+## 📈 Chỉ báo Kỹ thuật
+
+### EMA (Exponential Moving Average)
+- EMA 20: Xu hướng ngắn hạn
+- EMA 50: Xu hướng dài hạn
+
+### RSI (Relative Strength Index)
+- RSI > 70: Quá mua
+- RSI < 30: Quá bán
+- RSI 50-70: Tích cực
+- RSI 30-50: Trung tính
+
+### MACD (Moving Average Convergence Divergence)
+- MACD Line cắt Signal Line: Tín hiệu mua/bán
+- Histogram: Động lực thị trường
+
+## 🎨 Giao diện
+
+- **Theme**: Dark mode
+- **Colors**: 
+  - Primary: #2563eb (Blue)
+  - Success: #10b981 (Green)
+  - Danger: #ef4444 (Red)
+  - Warning: #f59e0b (Orange)
+- **Charts**: TradingView Lightweight Charts
+- **Icons**: Lucide React
+
+## 🚀 Mở rộng
+
+### Thêm mã cổ phiếu mới
+1. Thêm vào `SAMPLE_SYMBOLS` trong `DataInitializationService`
+2. Restart ứng dụng để tạo dữ liệu mẫu
+
+### Thêm chỉ báo kỹ thuật
+1. Mở rộng `TechnicalIndicators` class
+2. Cập nhật `PredictionEngine` để sử dụng chỉ báo mới
+
+### Tích hợp dữ liệu thực
+1. Thay thế `StockDataGenerator` bằng API thực
+2. Cập nhật `RealDataLoader` để xử lý format dữ liệu mới
+
+## 🐛 Troubleshooting
+
+### Backend không khởi động
+- Kiểm tra Java version: `java -version`
+- Kiểm tra Maven: `mvn -version`
+- Xem logs trong console
+
+### Frontend không kết nối API
+- Kiểm tra backend đang chạy tại port 8080
+- Kiểm tra CORS configuration
+- Mở Developer Tools để xem network errors
+
+### Database không có dữ liệu
+- Kiểm tra `DataInitializationService` đã chạy
+- Truy cập H2 Console để xem tables
+- Restart ứng dụng để tạo lại dữ liệu
+
+## 📝 License
+
+MIT License - Xem file LICENSE để biết thêm chi tiết.
+
+## 🤝 Đóng góp
+
+1. Fork dự án
+2. Tạo feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Mở Pull Request
+
+## 📞 Liên hệ
+
+- Email: your-email@example.com
+- GitHub: [your-username](https://github.com/your-username)
+
+---
+
+**Lưu ý**: Đây là hệ thống demo cho mục đích học tập. Không sử dụng cho giao dịch thực tế.
+
+---
+
+## Tài liệu kiến trúc và thành phần (Legacy)
 
 ### Tổng quan hệ thống
 - **Nguồn dữ liệu**: `main.stockprediction.data.StockDataGenerator` tạo dữ liệu OHLCV giả lập theo nhiều kịch bản (daily, intraday, trending, sideways, volatile, gap, hỗ trợ/kháng cự, điều kiện cực đoan).

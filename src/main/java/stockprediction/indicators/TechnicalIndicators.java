@@ -1,6 +1,6 @@
-package main.stockprediction.indicators;
+package stockprediction.indicators;
 
-import main.stockprediction.model.StockData;
+import stockprediction.model.StockData;
 import java.util.List;
 import java.util.ArrayList;
 

@@ -1,6 +1,6 @@
-package main.stockprediction.data;
+package stockprediction.data;
 
-import main.stockprediction.model.StockData;
+import stockprediction.model.StockData;
 
 import java.io.BufferedReader;
 import java.io.IOException;
