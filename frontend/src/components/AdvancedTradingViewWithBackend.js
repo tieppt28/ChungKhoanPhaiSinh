@@ -247,95 +247,11 @@ function AdvancedTradingViewWithBackend() {
       document.head.appendChild(script);
     };
 
-    const loadMarketAnalysis = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        const mockAnalysis = {
-          symbol: selectedSymbol,
-          currentPrice: 150.25,
-          change: 2.35,
-          changePercent: 1.59,
-          volume: 1250000,
-          marketCap: 2500000000,
-          pe: 18.5,
-          rsi: 65.2,
-          macd: {
-            macd: 1.25,
-            signal: 1.15,
-            histogram: 0.10
-          },
-          ema20: 148.50,
-          ema50: 145.75,
-          sma20: 149.20,
-          sma50: 147.80,
-          support: 145.00,
-          resistance: 155.00,
-          trend: 'BULLISH',
-          recommendation: 'BUY',
-          confidence: 78.5,
-          summary: 'Cổ phiếu đang trong xu hướng tăng mạnh với tín hiệu mua rõ ràng. RSI cho thấy động lực tích cực, MACD xác nhận xu hướng tăng. Khuyến nghị mua vào với stop-loss tại 145.00.'
-        };
-
-        setAnalysis(mockAnalysis);
-      } catch (err) {
-        setError('Không thể tải dữ liệu phân tích');
-        console.error('Market analysis error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
 
     loadTradingViewWidget();
     loadMarketAnalysis();
   }, [selectedSymbol]);
 
-  const loadTradingViewWidget = () => {
-    if (containerRef.current) {
-      containerRef.current.innerHTML = '';
-    }
-
-    const script = document.createElement('script');
-    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
-    script.async = true;
-    script.innerHTML = JSON.stringify({
-      "autosize": true,
-      "symbol": `NASDAQ:${selectedSymbol}`,
-      "interval": "1D",
-      "timezone": "Etc/UTC",
-      "theme": "dark",
-      "style": "1",
-      "locale": "en",
-      "toolbar_bg": "#1a1a1a",
-      "enable_publishing": false,
-      "hide_top_toolbar": false,
-      "hide_legend": false,
-      "save_image": false,
-      "container_id": `tradingview_${selectedSymbol}`,
-      "studies": [
-        "RSI@tv-basicstudies",
-        "MACD@tv-basicstudies",
-        "EMA@tv-basicstudies",
-        "Volume@tv-basicstudies"
-      ],
-      "overrides": {
-        "paneProperties.background": "#1a1a1a",
-        "paneProperties.vertGridProperties.color": "#333",
-        "paneProperties.horzGridProperties.color": "#333",
-        "symbolWatermarkProperties.transparency": 90,
-        "scalesProperties.textColor": "#ffffff",
-        "scalesProperties.lineColor": "#333"
-      }
-    });
-
-    if (containerRef.current) {
-      containerRef.current.appendChild(script);
-    }
-  };
 
   const loadMarketAnalysis = async () => {
     try {

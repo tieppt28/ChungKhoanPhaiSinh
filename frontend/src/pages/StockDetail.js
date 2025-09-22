@@ -261,26 +261,6 @@ function StockDetail() {
     }
   }, [symbol]);
 
-  const loadStockData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const [stockResponse, signalsResponse] = await Promise.all([
-        stockAPI.getLatestStockData(symbol),
-        signalAPI.getSignals(symbol)
-      ]);
-
-      setStockData(stockResponse.data);
-      setSignals(signalsResponse.data || []);
-      setLoading(false);
-
-    } catch (err) {
-      console.error('Error loading stock data:', err);
-      setError('Không thể tải dữ liệu cho mã cổ phiếu này.');
-      setLoading(false);
-    }
-  };
 
   const getSignalIcon = (signalType) => {
     switch (signalType) {

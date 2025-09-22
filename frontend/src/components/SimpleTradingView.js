@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { TrendingUp, TrendingDown, Activity, AlertTriangle } from 'lucide-react';
+import { TrendingUp, Activity, AlertTriangle } from 'lucide-react';
 
 const Container = styled.div`
   background-color: #1a1a1a;

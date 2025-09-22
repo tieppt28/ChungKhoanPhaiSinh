@@ -273,24 +273,6 @@ function Signals() {
     }
   };
 
-  const applyFilters = () => {
-    let filtered = [...signals];
-
-    if (filters.signalType !== 'ALL') {
-      filtered = filtered.filter(signal => signal.signalType === filters.signalType);
-    }
-
-    if (filters.confidence !== 'ALL') {
-      const threshold = parseFloat(filters.confidence);
-      filtered = filtered.filter(signal => signal.confidence >= threshold);
-    }
-
-    if (filters.symbol !== 'ALL') {
-      filtered = filtered.filter(signal => signal.symbol === filters.symbol);
-    }
-
-    setFilteredSignals(filtered);
-  };
 
   const getSignalIcon = (signalType) => {
     switch (signalType) {
