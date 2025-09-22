@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { ArrowLeft, TrendingUp, TrendingDown, AlertTriangle, Activity } from 'lucide-react';
 import AdvancedTradingViewWithBackend from '../components/AdvancedTradingViewWithBackend';
-import { stockAPI, signalAPI, formatPrice, formatDateTime } from '../services/api';
+import { formatPrice, formatDateTime } from '../services/api';
 
 const StockDetailContainer = styled.div`
   max-width: 1200px;
@@ -214,7 +214,7 @@ const ErrorMessage = styled.div`
 function StockDetail() {
   const { symbol } = useParams();
   const [stockData, setStockData] = useState(null);
-  const [signals, setSignals] = useState([]);
+  const [signals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 

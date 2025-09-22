@@ -250,7 +250,7 @@ function AdvancedTradingViewWithBackend() {
 
     loadTradingViewWidget();
     loadMarketAnalysis();
-  }, [selectedSymbol]);
+  }, [selectedSymbol, loadMarketAnalysis]);
 
 
   const loadMarketAnalysis = async () => {
