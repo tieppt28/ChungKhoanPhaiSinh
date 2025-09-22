@@ -228,8 +228,33 @@ function Signals() {
   }, []);
 
   useEffect(() => {
+    const applyFilters = () => {
+      let filtered = [...signals];
+
+      if (filters.signalType && filters.signalType !== 'ALL') {
+        filtered = filtered.filter(signal => signal.signalType === filters.signalType);
+      }
+
+      if (filters.symbol && filters.symbol !== 'ALL') {
+        filtered = filtered.filter(signal => signal.symbol === filters.symbol);
+      }
+
+      if (filters.confidence) {
+        filtered = filtered.filter(signal => signal.confidence >= filters.confidence);
+      }
+
+      if (filters.dateRange) {
+        const now = new Date();
+        const days = filters.dateRange === '7' ? 7 : filters.dateRange === '30' ? 30 : 90;
+        const cutoffDate = new Date(now.getTime() - (days * 24 * 60 * 60 * 1000));
+        filtered = filtered.filter(signal => new Date(signal.timestamp) >= cutoffDate);
+      }
+
+      setFilteredSignals(filtered);
+    };
+
     applyFilters();
-  }, [signals, filters, applyFilters]);
+  }, [signals, filters]);
 
   const loadSignals = async () => {
     try {

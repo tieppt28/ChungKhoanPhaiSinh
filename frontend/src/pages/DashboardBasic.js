@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TrendingUp, TrendingDown, BarChart3, Signal } from 'lucide-react';
-import AdvancedTradingViewWithBackend from '../components/AdvancedTradingViewWithBackend';
+import SimpleTradingView from '../components/SimpleTradingView';
 
 const DashboardContainer = styled.div`
   max-width: 1200px;
@@ -125,7 +125,7 @@ function DashboardBasic() {
           Biểu đồ Giá cổ phiếu
         </SectionTitle>
 
-        <AdvancedTradingViewWithBackend />
+        <SimpleTradingView symbol="AAPL" />
       </ChartSection>
     </DashboardContainer>
   );

@@ -167,9 +167,106 @@ function AdvancedTradingViewWithBackend() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const loadTradingViewWidget = () => {
+      if (containerRef.current) {
+        containerRef.current.innerHTML = '';
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js';
+      script.onload = () => {
+        if (window.TradingView) {
+          const chart = window.TradingView.createChart(containerRef.current, {
+            width: containerRef.current.offsetWidth,
+            height: 400,
+            layout: {
+              backgroundColor: '#1a1a1a',
+              textColor: '#ffffff',
+            },
+            grid: {
+              vertLines: {
+                color: '#333',
+              },
+              horzLines: {
+                color: '#333',
+              },
+            },
+            crosshair: {
+              mode: 1,
+            },
+            rightPriceScale: {
+              borderColor: '#333',
+            },
+            timeScale: {
+              borderColor: '#333',
+            },
+          });
+
+          const candlestickSeries = chart.addCandlestickSeries({
+            upColor: '#10b981',
+            downColor: '#ef4444',
+            borderDownColor: '#ef4444',
+            borderUpColor: '#10b981',
+            wickDownColor: '#ef4444',
+            wickUpColor: '#10b981',
+          });
+
+          // Load sample data
+          const sampleData = generateSampleData();
+          candlestickSeries.setData(sampleData);
+
+          chart.timeScale().fitContent();
+        }
+      };
+      document.head.appendChild(script);
+    };
+
+    const loadMarketAnalysis = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        const mockAnalysis = {
+          symbol: selectedSymbol,
+          currentPrice: 150.25,
+          change: 2.35,
+          changePercent: 1.59,
+          volume: 1250000,
+          marketCap: 2500000000,
+          pe: 18.5,
+          rsi: 65.2,
+          macd: {
+            macd: 1.25,
+            signal: 1.15,
+            histogram: 0.10
+          },
+          ema20: 148.50,
+          ema50: 145.75,
+          sma20: 149.20,
+          sma50: 147.80,
+          support: 145.00,
+          resistance: 155.00,
+          trend: 'BULLISH',
+          recommendation: 'BUY',
+          confidence: 78.5,
+          summary: 'Cổ phiếu đang trong xu hướng tăng mạnh với tín hiệu mua rõ ràng. RSI cho thấy động lực tích cực, MACD xác nhận xu hướng tăng. Khuyến nghị mua vào với stop-loss tại 145.00.'
+        };
+
+        setAnalysis(mockAnalysis);
+      } catch (err) {
+        setError('Không thể tải dữ liệu phân tích');
+        console.error('Market analysis error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     loadTradingViewWidget();
     loadMarketAnalysis();
-  }, [selectedSymbol, loadTradingViewWidget, loadMarketAnalysis]);
+  }, [selectedSymbol]);
 
   const loadTradingViewWidget = () => {
     if (containerRef.current) {

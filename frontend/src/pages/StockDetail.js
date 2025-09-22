@@ -219,10 +219,47 @@ function StockDetail() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const loadStockData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        const mockData = {
+          symbol: symbol,
+          currentPrice: 150.25,
+          change: 2.35,
+          changePercent: 1.59,
+          volume: 1250000,
+          marketCap: 2500000000,
+          pe: 18.5,
+          rsi: 65.2,
+          macd: 1.25,
+          ema20: 148.50,
+          ema50: 145.75,
+          support: 145.00,
+          resistance: 155.00,
+          trend: 'BULLISH',
+          recommendation: 'BUY',
+          confidence: 78.5,
+          summary: 'Cổ phiếu đang trong xu hướng tăng mạnh với tín hiệu mua rõ ràng.'
+        };
+
+        setStockData(mockData);
+      } catch (err) {
+        setError('Không thể tải dữ liệu cổ phiếu');
+        console.error('Stock data error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (symbol) {
       loadStockData();
     }
-  }, [symbol, loadStockData]);
+  }, [symbol]);
 
   const loadStockData = async () => {
     try {
