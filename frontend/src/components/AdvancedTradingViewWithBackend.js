@@ -2,6 +2,32 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { marketAnalysisAPI } from '../services/api';
 
+// Generate sample candlestick data
+const generateSampleData = () => {
+  const data = [];
+  const now = Date.now();
+  const oneDay = 24 * 60 * 60 * 1000;
+  
+  for (let i = 100; i >= 0; i--) {
+    const time = now - (i * oneDay);
+    const basePrice = 100 + Math.random() * 50;
+    const open = basePrice + (Math.random() - 0.5) * 5;
+    const close = open + (Math.random() - 0.5) * 10;
+    const high = Math.max(open, close) + Math.random() * 5;
+    const low = Math.min(open, close) - Math.random() * 5;
+    
+    data.push({
+      time: time / 1000,
+      open: parseFloat(open.toFixed(2)),
+      high: parseFloat(high.toFixed(2)),
+      low: parseFloat(low.toFixed(2)),
+      close: parseFloat(close.toFixed(2))
+    });
+  }
+  
+  return data;
+};
+
 const Container = styled.div`
   width: 100%;
   display: flex;
