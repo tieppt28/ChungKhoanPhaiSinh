@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { ArrowLeft, TrendingUp, TrendingDown, AlertTriangle, Activity } from 'lucide-react';
 import AdvancedTradingViewWithBackend from '../components/AdvancedTradingViewWithBackend';
-import { stockAPI, signalAPI, formatPrice, formatDateTime, formatPercentage } from '../services/api';
+import { stockAPI, signalAPI, formatPrice, formatDateTime } from '../services/api';
 
 const StockDetailContainer = styled.div`
   max-width: 1200px;
@@ -222,7 +222,7 @@ function StockDetail() {
     if (symbol) {
       loadStockData();
     }
-  }, [symbol]);
+  }, [symbol, loadStockData]);
 
   const loadStockData = async () => {
     try {

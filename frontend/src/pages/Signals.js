@@ -229,7 +229,7 @@ function Signals() {
 
   useEffect(() => {
     applyFilters();
-  }, [signals, filters]);
+  }, [signals, filters, applyFilters]);
 
   const loadSignals = async () => {
     try {

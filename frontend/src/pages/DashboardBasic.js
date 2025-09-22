@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { TrendingUp, TrendingDown, BarChart3, Signal } from 'lucide-react';
 import AdvancedTradingViewWithBackend from '../components/AdvancedTradingViewWithBackend';

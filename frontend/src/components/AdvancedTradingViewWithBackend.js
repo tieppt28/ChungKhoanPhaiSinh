@@ -169,7 +169,7 @@ function AdvancedTradingViewWithBackend() {
   useEffect(() => {
     loadTradingViewWidget();
     loadMarketAnalysis();
-  }, [selectedSymbol]);
+  }, [selectedSymbol, loadTradingViewWidget, loadMarketAnalysis]);
 
   const loadTradingViewWidget = () => {
     if (containerRef.current) {

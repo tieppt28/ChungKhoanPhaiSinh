@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { TrendingUp, BarChart3, Signal, Globe } from 'lucide-react';
+import { TrendingUp, BarChart3, Signal } from 'lucide-react';
 
 const HeaderContainer = styled.header`
   position: fixed;
