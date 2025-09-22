@@ -28,7 +28,6 @@ public class MarketAnalysisService {
     private final TechnicalIndicators technicalIndicators = new TechnicalIndicators();
     
     private final PredictionEngine predictionEngine = new PredictionEngine();
-
     
     /**
      * Get comprehensive market analysis for TradingView
