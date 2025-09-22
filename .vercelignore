@@ -6,3 +6,5 @@ pom.xml
 !frontend/public/
 !frontend/package.json
 !frontend/package-lock.json
+!frontend/.env
+!frontend/build/
